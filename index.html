@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="description" content="BADDIECULTURE // BUILD YOUR OUTFIT">
+  <meta name="theme-color" content="#0a0a0a">
+  <title>BADDIECULTURE // BUILD YOUR OUTFIT</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="liminal-bg" aria-hidden="true"></div>
+  <div class="grain-overlay" aria-hidden="true"></div>
+  <div class="scan-overlay" aria-hidden="true"></div>
+  <button class="brand-mark pixel" id="brand-secret" type="button" aria-label="BADDIECULTURE signal">BADDIECULTURE</button>
+  <div class="signal-toast pixel" id="signal-toast" role="status" aria-live="polite"></div>
+
+  <main id="app">
+    <section class="screen active" id="screen-boot" aria-label="Loading">
+      <div class="panel boot-card">
+        <div class="boot-title pixel">BUILD YOUR OUTFIT</div>
+        <div class="boot-bar-wrap">
+          <div class="boot-bar-frame"><div class="boot-bar-track"><div class="boot-bar-fill" id="boot-fill"></div></div></div>
+          <div class="boot-pct" id="boot-pct">00%</div>
+        </div>
+        <div class="boot-log" id="boot-log" aria-live="polite">
+          <span>&gt; INITIALIZING WARDROBE...</span>
+          <span>&gt; LOADING FABRIC DATA...</span>
+          <span>&gt; CALIBRATING FIT...</span>
+          <span>&gt; SYNCING DROP_04...</span>
+          <span>&gt; READY.</span>
+        </div>
+      </div>
+      <div class="boot-enter" id="boot-enter" hidden>
+        <button class="enter-btn pixel" id="enter-btn" type="button">○ ENTER ARCHIVE</button>
+        <div class="enter-hint pixel">PRESS TO INITIALIZE AUDIO // ENTER</div>
+      </div>
+      <p class="disclaimer">BADDIECULTURE © ALL RIGHTS RESERVED. UNAUTHORIZED FIT-COPYING MAY RESULT IN VISIBLE REGRET. NOT RESPONSIBLE FOR SUDDEN CONFIDENCE.</p>
+    </section>
+
+    <section class="screen" id="screen-select" aria-label="Build your outfit">
+      <header class="hud-header">
+        <span>DROP_04 // ARCHIVE_04</span>
+        <span class="title">SELECT LOADOUT</span>
+        <span id="drop-counter" aria-label="Drop availability">37 / 100 AVAILABLE</span><button class="sound-toggle pixel" id="sound-toggle" type="button" aria-pressed="false" aria-label="Toggle background music">♪ MUSIC: ON</button><span id="stage-count" class="sr-only" aria-hidden="true">01 / 03</span>
+      </header>
+
+      <div class="preset-bar" aria-label="Outfit presets">
+        <span class="preset-label pixel">PRESETS</span>
+        <button class="preset-btn pixel" type="button" data-preset="default">DEFAULT</button>
+        <button class="preset-btn pixel" type="button" data-preset="all-black">ALL BLACK</button>
+        <button class="preset-btn pixel" type="button" data-preset="street">STREET</button>
+        <button class="preset-btn pixel" type="button" data-preset="angel">ANGEL</button>
+        <button class="preset-btn pixel" type="button" data-preset="full-fit">FULL FIT</button>
+        <button class="random-btn pixel" id="randomize-btn" type="button">⚄ RANDOMIZE</button>
+      </div>
+
+      <div class="select-body">
+        <button class="arrow-btn pixel" id="prev-btn" aria-label="Previous product">‹</button>
+
+        <div class="product-stage">
+          <article class="product-card" id="product-card">
+            <div class="product-image" id="product-image">
+              <span class="cat-tag" id="product-cat">TOP</span>
+              <img id="product-img" src="" alt="" width="500" height="500" loading="eager" decoding="async">
+              <span class="image-index pixel" id="image-index">01</span>
+              <div class="asset-error" id="asset-error" hidden role="alert"><span class="pixel">ASSET ERROR</span><button type="button" class="retry-btn pixel" id="retry-img">↻ RETRY</button></div>
+            </div>
+            <div class="product-name pixel" id="product-name">THREE EYES BABY TEE</div>
+            <div class="product-price pixel" id="product-price">₹500</div>
+            <div class="color-row" id="color-row"></div>
+            <button class="add-btn pixel" id="add-btn">× ADD TO OUTFIT</button>
+            <div class="micro-copy" id="micro-copy">SELECT A COLOR // ADD TO LOADOUT</div>
+            <button class="info-toggle pixel" id="info-toggle" type="button" aria-expanded="false">+ ITEM DATA</button>
+            <div class="product-info" id="product-info" hidden></div>
+          </article>
+
+          <div class="mannequin-wrap">
+            <div class="mannequin-label pixel">YOUR FIGHTER</div>
+            <div class="fighter-frame">
+              <div id="mannequin" class="fighter-stack" aria-label="Your fighter outfit">
+                <img id="fighter-base" class="fighter-layer base" alt="BADDIECULTURE fighter base" width="432" height="578" decoding="async">
+                <img id="fighter-bottom" class="fighter-layer bottom" alt="Equipped bottom" width="432" height="578" decoding="async">
+                <img id="fighter-top" class="fighter-layer top" alt="Equipped top" width="432" height="578" decoding="async">
+                <img id="fighter-accessory" class="fighter-layer accessory" alt="Equipped accessory" width="432" height="578" decoding="async">
+              </div>
+              <span class="fighter-status pixel" id="fighter-status">BASE LOADOUT</span>
+            </div>
+            <div class="tray" id="tray" aria-label="Selected outfit slots">
+              <button class="tray-slot" data-slot="top" type="button">TOP</button>
+              <button class="tray-slot" data-slot="bottom" type="button">BTM</button>
+              <button class="tray-slot" data-slot="accessory" type="button">ACC</button>
+            </div>
+            <button class="stats-toggle pixel" id="stats-toggle" type="button" aria-expanded="false">+ FIGHTER DATA</button>
+            <div class="fighter-stats" id="fighter-stats" aria-label="Fighter stats" hidden>
+              <div><span>AURA</span><b id="stat-aura">05</b></div>
+              <div><span>CHAOS</span><b id="stat-chaos">05</b></div>
+              <div><span>STYLE</span><b id="stat-style">05</b></div>
+              <div><span>ENERGY</span><b id="stat-energy">05</b></div>
+            </div>
+</div>
+        </div>
+
+        <button class="arrow-btn pixel" id="next-btn" aria-label="Next product">›</button>
+      </div>
+
+      <div class="character-actions">
+        <button class="save-fit-btn pixel" id="save-fit-btn" type="button">↓ SAVE CHARACTER</button>
+        <button class="share-fit-btn pixel" id="share-fit-btn" type="button">↗ SHARE CHARACTER</button>
+      </div>
+
+      <button class="proceed-btn pixel" id="proceed-btn">○ VIEW LOADOUT</button>
+    </section>
+
+    <section class="screen" id="screen-loadout" aria-label="Your loadout">
+      <button class="back-link pixel" id="back-to-select">← BACK TO SELECT</button>
+      <header class="hud-header"><span class="title">YOUR LOADOUT</span><span id="loadout-count">0 ITEMS</span></header>
+      <div class="loadout-grid" id="loadout-grid"></div>
+      <div class="redeem-box">
+        <input type="text" id="redeem-input" placeholder="ENTER CREATOR CODE" autocomplete="off" maxlength="24">
+        <button id="redeem-btn" class="pixel">○ APPLY</button>
+      </div>
+      <div class="redeem-msg" id="redeem-msg" aria-live="polite"></div>
+      <div class="hud-box">
+        <div class="hud-box-title">ORDER SUMMARY</div>
+        <div id="price-lines"></div>
+      </div>
+      <button class="confirm-btn pixel" id="confirm-btn" disabled>× CONFIRM ORDER</button>
+    </section>
+
+    <section class="screen" id="screen-confirm" aria-label="Order confirmation">
+      <div class="panel confirm-card">
+        <div class="connecting-text pixel connecting-dots" id="connecting-text">CONNECTING</div>
+        <div class="confirm-summary" id="confirm-summary"></div>
+        <a href="#" target="_blank" rel="noopener" class="wa-btn pixel" id="wa-link">○ OPEN WHATSAPP</a>
+        <div class="confirm-note">Your outfit details are pre-filled in the message. We'll ask for your delivery address once you confirm.</div>
+      </div>
+      <button class="back-link pixel" id="restart-btn">← START OVER</button>
+    </section>
+  </main>
+
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Cart" aria-hidden="true">
+    <div class="cart-head">
+      <span class="pixel">YOUR CART</span>
+      <button class="cart-close pixel" id="cart-close" type="button" aria-label="Close cart">×</button>
+    </div>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-foot">
+      <div class="cart-total pixel"><span>TOTAL</span><span id="cart-total">₹0</span></div>
+      <button class="cart-checkout pixel" id="cart-checkout" type="button" aria-label="View your loadout">○ VIEW LOADOUT</button>
+    </div>
+  </aside>
+  <button class="cart-fab pixel" id="cart-fab" type="button" aria-label="Open cart">CART <span id="cart-count-badge">0</span></button>
+
+  <script>if ("serviceWorker" in navigator) window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));</script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
