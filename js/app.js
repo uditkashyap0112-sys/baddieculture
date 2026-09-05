@@ -3,7 +3,7 @@
 
   // ================= CONFIG =================
   // Replace this with the real BADDIECULTURE WhatsApp number before launch.
-  const WHATSAPP_NUMBER = '910000000000';
+  const WHATSAPP_NUMBER = '919217001375';
   const REDEEM_CODES = { MIORIMIORI: 15, THAPA15: 15, DIYA15: 15, KENTALORE15: 15, AC15: 15, TANITYA15: 15 , ADITI15: 15 };
   // Optional GA4 measurement ID. Replace with your real ID (G-XXXXXXXXXX) before launch.
   const ANALYTICS_MEASUREMENT_ID = 'G-XXXXXXXXXX';
