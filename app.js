@@ -1,0 +1,51 @@
+(() => {
+  'use strict';
+  const WA = '919217001375';
+  const CODES = {MIORIMIORI:15, THAPA15:15, DIYA15:15, KENTALORE15:15, AC15:15, TANITYA15:15, ADITI15:15};
+  const PRODUCTS = [
+    {id:'tee01',cat:'TOP / BABY TEE',name:'THE EYES',sub:'BABY TEE',price:599,desc:'220GSM 90/10 COTTON-SPANDEX · CROPPED / BOXY / STRETCHY · SCREEN-PRINTED GRAPHIC.',details:'XS–L · BLACK / WHITE · THE PIECE THAT STARTED THE SIGNAL.',images:{black:'assets/tee-black.jpg',white:'assets/tee-white.jpg'},colors:['black','white'],sizes:['XS','S','M','L']},
+    {id:'sweat01',cat:'BOTTOM / SWEATPANTS',name:'KISS SWEATPANTS',sub:'RELAXED TAPER',price:799,desc:'320GSM FLEECE · RELAXED TAPERED · EMBROIDERED LIP GRAPHIC.',details:'S–XXL · BLACK / CREAM · BUILT FOR LATE WALKS AND LONG NIGHTS.',images:{black:'assets/pants-black.jpg',cream:'assets/pants-cream.jpg'},colors:['black','cream'],sizes:['S','M','L','XL','XXL']},
+    {id:'band01',cat:'ACCESSORY / ARCHIVE',name:'ANGEL BANDANA',sub:'55 × 55 CM',price:149,desc:'SATIN POLY WOVEN · ONE SIZE · ALL-OVER WING + ROSE PRINT.',details:'ONE SIZE · ARCHIVE PIECE · WEAR IT HOW YOU WANT.',images:{default:'assets/bandana.jpg'},colors:['default'],sizes:['55×55cm']}
+  ];
+  const state = {cart:[], modal:null, modalColor:null, modalSize:null, discount:0, code:'', checkout:false};
+  const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+  const money=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+  const product=id=>PRODUCTS.find(p=>p.id===id);
+  const toast=m=>{const el=$('#toast');el.textContent=m;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2200)};
+  function scrollToId(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'});$('#mobile-nav').classList.remove('open')}
+  function renderProducts(filter=''){
+    const grid=$('#product-grid'); const list=PRODUCTS.filter(p=>(p.name+' '+p.sub+' '+p.cat).toLowerCase().includes(filter.toLowerCase()));
+    grid.innerHTML=list.map((p,i)=>{const c=p.colors[0];return `<article class="product-card"><button class="product-media image-button" data-product="${p.id}"><span class="product-no">${String(i+1).padStart(2,'0')}</span><span class="product-cat">${p.cat}</span><img src="${p.images[c]}" alt="${p.name} ${c}"></button><div class="product-body"><h3>${p.name}</h3><p>${p.desc}</p><div class="product-meta"><strong>${money(p.price)}</strong><button class="card-buy" data-product="${p.id}">SELECT SIZE + ADD</button></div></div></article>`}).join('')||'<div class="empty-cart">NO RESULTS.</div>';
+  }
+  function openModal(id){const p=product(id);state.modal=p;state.modalColor=p.colors[0];state.modalSize=null;$('#modal-image').src=p.images[state.modalColor];$('#modal-image').alt=p.name;$('#modal-cat').textContent=p.cat+' / '+p.sub;$('#modal-name').textContent=p.name;$('#modal-price').textContent=money(p.price);$('#modal-desc').textContent=p.desc;$('#modal-details').textContent=p.details;$('#modal-colors').innerHTML=p.colors.map(c=>`<button class="choice ${c===state.modalColor?'active':''}" data-color="${c}">${c.toUpperCase()}</button>`).join('');$('#modal-sizes').innerHTML=p.sizes.map(s=>`<button class="choice" data-size="${s}">${s}</button>`).join('');$('#product-modal').classList.add('open');$('#product-modal').setAttribute('aria-hidden','false')}
+  function closeModal(){$('#product-modal').classList.remove('open');state.modal=null}
+  function addToCart(p,color,size,qty=1){const key=`${p.id}-${color}-${size}`;const found=state.cart.find(x=>x.key===key);if(found)found.qty+=qty;else state.cart.push({key,id:p.id,name:p.name,color,size,price:p.price,photo:p.images[color],qty});renderCart();toast('ADDED TO CART')}
+  function renderCart(){const count=state.cart.reduce((a,x)=>a+x.qty,0), total=state.cart.reduce((a,x)=>a+x.price*x.qty,0);$('#cart-count').textContent=count;$('#cart-total').textContent=money(total);$('#cart-items').innerHTML=state.cart.length?state.cart.map(x=>`<div class="cart-line"><img src="${x.photo}" alt="${x.name}"><div><b>${x.name}</b><small>${x.color.toUpperCase()} · ${x.size} · QTY ${x.qty}</small><strong>${money(x.price*x.qty)}</strong></div><button data-remove="${x.key}" aria-label="Remove">×</button></div>`).join(''):'<div class="empty-cart">CART EMPTY<br><small>GO MAKE A FIT.</small></div>'}
+  function openCart(){$('#cart-drawer').classList.add('open');$('#cart-drawer').setAttribute('aria-hidden','false')}
+  function closeCart(){$('#cart-drawer').classList.remove('open');$('#cart-drawer').setAttribute('aria-hidden','true')}
+  function openCheckout(){if(!state.cart.length){toast('CART EMPTY');return}closeCart();state.checkout=true;$('#checkout').classList.add('open');$('#checkout').setAttribute('aria-hidden','false');renderCheckout()}
+  function closeCheckout(){state.checkout=false;$('#checkout').classList.remove('open');$('#checkout').setAttribute('aria-hidden','true')}
+  function applyCode(){const code=$('#redeem').value.trim().toUpperCase();state.code=code;if(CODES[code]){state.discount=CODES[code];$('#redeem-msg').textContent=`CODE APPLIED · -${CODES[code]}%`;toast('CREATOR CODE APPLIED')}else{state.discount=0;$('#redeem-msg').textContent=code?'INVALID CODE':'ENTER A CODE'}}
+  function renderCheckout(){const subtotal=state.cart.reduce((a,x)=>a+x.price*x.qty,0), total=Math.max(0,Math.round(subtotal*(1-state.discount/100)));$('#checkout-items').innerHTML=state.cart.map(x=>`<div class="summary-item"><span>${x.name}<br>${x.color.toUpperCase()} · ${x.size} × ${x.qty}</span><b>${money(x.price*x.qty)}</b></div>`).join('');$('#checkout-subtotal').textContent=money(subtotal);$('#checkout-discount').textContent=state.discount?`-${state.discount}%`:'—';$('#checkout-total').textContent=money(total)}
+  function submitCheckout(e){e.preventDefault();if(!state.cart.length){toast('CART EMPTY');return}const fd=new FormData(e.target), req=['name','mobile','address','city','state','pincode'];if(req.some(k=>!String(fd.get(k)||'').trim())){toast('FILL ALL REQUIRED DETAILS');return}const subtotal=state.cart.reduce((a,x)=>a+x.price*x.qty,0), total=Math.max(0,Math.round(subtotal*(1-state.discount/100)));const lines=state.cart.map(x=>`- ${x.name} — ${x.color.toUpperCase()} — Size: ${x.size} — Qty: ${x.qty} — ${money(x.price*x.qty)}`).join('\n');const msg=`BADDIECULTURE ORDER\n\nCUSTOMER\nName: ${fd.get('name')}\nMobile: ${fd.get('mobile')}\nEmail: ${fd.get('email')||'Not provided'}\nAddress: ${fd.get('address')}, ${fd.get('city')}, ${fd.get('state')} - ${fd.get('pincode')}\n\nITEMS\n${lines}\n\nSubtotal: ${money(subtotal)}\nCreator / Redeem Code: ${state.code||'NONE'}\nDiscount: ${state.discount}%\nTOTAL: ${money(total)}${fd.get('notes')?`\n\nNotes: ${fd.get('notes')}`:''}`;window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,'_blank','noopener');toast('OPENING WHATSAPP')}
+  function openBuilder(){$('#builder-overlay').classList.add('open');$('#builder-overlay').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+  function closeBuilder(){$('#builder-overlay').classList.remove('open');$('#builder-overlay').setAttribute('aria-hidden','true');document.body.style.overflow=''}
+  function builderMessage(e){
+    if(!e.data||e.data.type!=='BC_BUILDER_ORDER')return;
+    const items=e.data.items||[]; if(!items.length)return;
+    state.cart=items.map((x,i)=>{
+      const p=product(x.id);
+      const color=(x.colorId && p && p.colors.includes(x.colorId))?x.colorId:(p?p.colors[0]:'black');
+      return {key:`builder-${x.id}-${color}-${x.size}-${i}`,id:x.id,name:x.name,color,colorLabel:x.colorLabel||color,size:x.size,price:Number(x.price),photo:p?p.images[color]:x.photo,qty:1};
+    });
+    state.code=String(e.data.code||'').toUpperCase();
+    state.discount=Number(e.data.discountPct)||0;
+    renderCart();closeBuilder();openCheckout();
+    if(state.code){$('#redeem').value=state.code;$('#redeem-msg').textContent=`CODE APPLIED · -${state.discount}%`;}
+    toast('LOADOUT SENT TO CHECKOUT');
+  }
+  document.addEventListener('click',e=>{const pbtn=e.target.closest('[data-product]');if(pbtn)openModal(pbtn.dataset.product);if(e.target.closest('[data-cart]'))openCart();if(e.target.closest('[data-close-cart]'))closeCart();if(e.target.closest('[data-close-modal]'))closeModal();if(e.target.closest('[data-open-builder]'))openBuilder();if(e.target.closest('[data-close-builder]'))closeBuilder();if(e.target.closest('[data-menu]'))$('#mobile-nav').classList.toggle('open');const s=e.target.closest('[data-scroll]');if(s)scrollToId(s.dataset.scroll);const rem=e.target.closest('[data-remove]');if(rem){state.cart=state.cart.filter(x=>x.key!==rem.dataset.remove);renderCart()}const color=e.target.closest('[data-color]');if(color&&state.modal){state.modalColor=color.dataset.color;$('#modal-image').src=state.modal.images[state.modalColor];$$('[data-color]').forEach(x=>x.classList.toggle('active',x===color))}const size=e.target.closest('[data-size]');if(size&&state.modal){state.modalSize=size.dataset.size;$$('[data-size]').forEach(x=>x.classList.toggle('active',x===size))}if(e.target.id==='modal-add'){if(!state.modalSize){toast('SELECT A SIZE FIRST');return}addToCart(state.modal,state.modalColor,state.modalSize);closeModal();openCart()}if(e.target.id==='go-checkout')openCheckout();if(e.target.id==='apply-code'){e.preventDefault();applyCode()}if(e.target.closest('[data-search]')){const panel=$('#search-panel');panel.classList.toggle('open');if(panel.classList.contains('open'))$('#search-input').focus()}});
+  $('#checkout-form').addEventListener('submit',submitCheckout);$('#checkout-back').addEventListener('click',()=>{closeCheckout();openCart()});$('#search-input').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();$('#search-results').innerHTML=q?PRODUCTS.filter(p=>(p.name+' '+p.sub+' '+p.cat).toLowerCase().includes(q)).map(p=>`<button class="search-result" data-product="${p.id}"><span>${p.name}</span><span>${money(p.price)} ↗</span></button>`).join(''):'<div class="mono">TYPE TO SEARCH THE ARCHIVE.</div>'});
+  window.addEventListener('message',builderMessage);window.addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCart();closeCheckout();$('#search-panel').classList.remove('open');closeBuilder()}});
+  renderProducts();renderCart();
+})();

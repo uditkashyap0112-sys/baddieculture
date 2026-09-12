@@ -725,7 +725,20 @@
     renderPriceBox();
   });
 
-  els.confirmBtn.addEventListener('click', () => { if (!els.confirmBtn.disabled) { trackEvent('order_intent', { item_count:Object.keys(outfit).length, value:calcSubtotal(), combination:outfitCombination(), discount_pct:discountPct }); prepareWhatsapp(); showScreen('confirm'); } });
+  els.confirmBtn.addEventListener('click', () => {
+    if (els.confirmBtn.disabled) return;
+    trackEvent('order_intent', { item_count:Object.keys(outfit).length, value:calcSubtotal(), combination:outfitCombination(), discount_pct:discountPct });
+    // When embedded in the storefront, hand the complete loadout to the parent checkout.
+    // The original builder UI remains intact; only the final order handoff is upgraded.
+    if (window.parent && window.parent !== window) {
+      const items = Object.values(outfit).map(p => ({
+        id:p.id, name:p.name, price:p.price, colorId:p.colorId, colorLabel:p.colorLabel, size:selectedSizes[p.id], photo:p.photo
+      }));
+      window.parent.postMessage({ type:'BC_BUILDER_ORDER', items, code:appliedCode || '', discountPct }, '*');
+      return;
+    }
+    prepareWhatsapp(); showScreen('confirm');
+  });
 
   function prepareWhatsapp() {
     const subtotal = calcSubtotal();
